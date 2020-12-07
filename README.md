@@ -12,6 +12,6 @@ Day 4 :star:
 
 Day 5
 
-Day 6
+Day 6 :star:
 
 Day 7 :star: :star:
