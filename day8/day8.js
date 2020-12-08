@@ -24,29 +24,25 @@ class Accumulator {
         this.line += value;
         break;
       default:
-        console.log("invalid operation");
+        console.log(`invalid operation ${operation}`);
         break;
     }
     this.processed.push(line);
   };
 
   run = () => {
-    // while true.  I know...
-    while (1) {
-      // are we complete?
-      if (this.line == this.instructionList.length) {
-        return "program completed";
-      }
+    while (this.line < this.instructionList.length) {
       // have we processed this line? ie is there an infinite loop
       if (this.processed.includes(this.line)) {
         return `loop detected: ${this.accumulator}`;
       }
       this.followInstruction(this.line);
     }
+    return `program complete: ${this.accumulator}`;
   };
 }
 
-const instructions = fs.readFileSync("input.txt", "utf-8").split("\n");
+const instructions = fs.readFileSync("input-short.txt", "utf-8").split("\n");
 
 const acc = new Accumulator(instructions);
 console.log(acc.run());
