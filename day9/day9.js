@@ -1,13 +1,10 @@
 const fs = require("fs");
 
 const checkList = (list, offset) => {
-  // BE NUMBERS YOU LITTLE FUCKS
-  list = list.map((x) => parseInt(x));
   for (let i = offset; i < list.length; i++) {
     // preamble = previous offset number of items
     let preamble = list.slice(i - offset, i);
     if (!isSummable(list[i], preamble)) {
-      console.log("not summable");
       return list[i];
     }
   }
@@ -29,6 +26,9 @@ const isSummable = (target, list) => {
   return false;
 };
 
-const list = fs.readFileSync("input.txt", "utf-8").split("\n");
+const list = fs
+  .readFileSync("input.txt", "utf-8")
+  .split("\n")
+  .map((x) => parseInt(x));
 
 console.log(checkList(list, 25));
