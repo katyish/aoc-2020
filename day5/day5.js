@@ -28,6 +28,18 @@ const traverse = (min, max, upper, lower, data) => {
   }
 };
 
+const findMissingNumber = (seats) => {
+  // in order please
+  seats.sort((a, b) => a - b);
+
+  // look for a gap of more than one
+  for (let i = 0; i < seatIDs.length; i++) {
+    if (seatIDs[i + 1] - seatIDs[i] > 1) {
+      return seatIDs[i] + 1;
+    }
+  }
+};
+
 const passes = fs.readFileSync("input.txt", "utf-8").split("\n");
 
 let seatIDs = [];
@@ -36,4 +48,6 @@ for (key in passes) {
 }
 
 // highest seatID in the list:
-console.log(Math.max(...seatIDs));
+//console.log(Math.max(...seatIDs));
+
+console.log(findMissingNumber(seatIDs));

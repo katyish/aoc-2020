@@ -10,7 +10,7 @@ Day 3 :star: :star:
 
 Day 4 :star:
 
-Day 5 :star:
+Day 5 :star: :star:
 
 Day 6 :star:
 
