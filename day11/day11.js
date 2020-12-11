@@ -6,10 +6,12 @@ class SeatGrid {
    * L empty seat
    * # occupied seat
    */
-  constructor(grid) {
+  constructor(grid, occupiedChange, rule) {
     this.grid = grid;
     this.yLength = grid.length;
     this.xLength = grid[0].length;
+    this.occupiedChange = occupiedChange; // how many seats around us are occupied before we move
+    this.rule = rule; // "adjacent" or "visible"
 
     // relative x,y positions
     this.adjSeatPositions = [
@@ -31,35 +33,62 @@ class SeatGrid {
 
   // what seats are around us?
   getAdjacentSeats = (seatX, seatY) => {
-    const status = [];
+    const adjacent = [];
     this.adjSeatPositions.forEach((adj) => {
       const newX = seatX + adj[0];
       const newY = seatY + adj[1];
       if (newX >= 0 && newX < this.xLength) {
         if (newY >= 0 && newY < this.yLength) {
-          status.push(this.getSeatStatus(newX, newY));
+          adjacent.push(this.getSeatStatus(newX, newY));
         }
       }
     });
-    return status;
+    return adjacent;
+  };
+
+  seatInDirection(seatX, seatY, moveX, moveY) {
+    const newX = seatX + moveX;
+    const newY = seatY + moveY;
+    if (newX >= 0 && newX < this.xLength) {
+      if (newY >= 0 && newY < this.yLength) {
+        const newSeat = this.getSeatStatus(newX, newY);
+        if (newSeat != ".") {
+          return this.getSeatStatus(newX, newY);
+        } else {
+          return this.seatInDirection(newX, newY, moveX, moveY);
+        }
+      }
+    }
+  }
+
+  // what seats are visible in each direction (part2)
+  getVisibleSeats = (seatX, seatY) => {
+    const visible = [];
+    // loop through adj positions
+    // if it's not a seat, look again in this direction
+    // if it's a seat (L or #), add to our list
+    this.adjSeatPositions.forEach((adj) => {
+      const newSeat = this.seatInDirection(seatX, seatY, adj[0], adj[1]);
+      if (newSeat) visible.push(newSeat);
+    });
+    return visible;
   };
 
   // transform an individual seat
   transformSeat = (x, y) => {
     let status = this.getSeatStatus(x, y);
-    let countAdjOccupied = countOccupiedSeats(this.getAdjacentSeats(x, y));
-
-    if (status === ".") {
-      return ".";
+    let countNearbySeats = countOccupiedSeats(this.getAdjacentSeats(x, y));
+    if (this.rule == "visible") {
+      countNearbySeats = countOccupiedSeats(this.getVisibleSeats(x, y));
     }
     if (status === "L") {
       // currently empty
-      if (countAdjOccupied == 0) {
+      if (countNearbySeats === 0) {
         return "#";
       } else return "L";
     }
     if (status === "#") {
-      if (countAdjOccupied >= 4) {
+      if (countNearbySeats >= this.occupiedChange) {
         return "L";
       } else return "#";
     }
@@ -81,7 +110,11 @@ class SeatGrid {
 
     if (!arrayEquals(this.grid, newGrid)) {
       // go again
-      newGrid = new SeatGrid(newGrid).transformGrid();
+      newGrid = new SeatGrid(
+        newGrid,
+        this.occupiedChange,
+        this.rule
+      ).transformGrid();
     }
     return newGrid;
   };
@@ -104,11 +137,17 @@ function arrayEquals(a, b) {
 }
 
 const seats = fs.readFileSync("input.txt", "utf-8").split("\n");
+// part one - adjacent seats
+const part1Grid = new SeatGrid(seats, 4, "adjacent");
 
-const grid = new SeatGrid(seats);
-
-const transformedSeats = grid.transformGrid();
-
+const transformedSeats = part1Grid.transformGrid();
 //console.log(transformedSeats);
-
 console.log(countOccupiedSeats(transformedSeats));
+
+// part 2 - visible seats
+const part2Grid = new SeatGrid(seats, 5, "visible");
+const transformed = part2Grid.transformGrid();
+
+//console.log(transformed);
+
+console.log(countOccupiedSeats(transformed));

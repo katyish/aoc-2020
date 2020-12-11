@@ -22,4 +22,4 @@ Day 9 :star:
 
 Day 10 :star:
 
-Day 11 :star:
+Day 11 :star: :star:
