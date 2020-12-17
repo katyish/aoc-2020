@@ -20,7 +20,7 @@ class NumberGame {
       } else {
         newValue = 0;
       }
-      console.log(`turn ${this.turn}: ${newValue}`);
+      //console.log(`turn ${this.turn}: ${newValue}`);
 
       this.played.set(this.value, this.turn - 1);
       this.value = newValue;
@@ -32,4 +32,4 @@ class NumberGame {
 
 const input = [8, 0, 17, 4, 1, 12];
 const game = new NumberGame(input);
-game.play(2020);
+game.play(30000000);
